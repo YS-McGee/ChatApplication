@@ -55,8 +55,17 @@ class ConversationHandler extends Thread {
                 }
                 ++count;
             }
-            out.println("NAME_ACCEPTED");
+            out.println("NAME_ACCEPTED"+name);
             ChatServer.printWriters.add(out);
+
+            while (true) {
+                String message = in.readLine();
+
+                if (message == null)
+                    return;
+                for (PrintWriter writer : ChatServer.printWriters)              // For all writer in printWriter
+                    writer.println(name + ": " + message);
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
