@@ -33,28 +33,41 @@ public class ChatClient {
         chatWindow.setSize(475, 500);
         chatWindow.setVisible(true);                                     // Display these things on screen
 
-
         textField.setEditable(false);                                    // set true once server connection established
         chatArea.setEditable(false);                                     // chatArea is only for displaying
-
-
     }
 
     // Main logic for chatClient
     void startChat() throws Exception {
 
-        String ipAddress = JOptionPane.showInputDialog(chatWindow,
+        String ipAddress = (String) JOptionPane.showInputDialog(chatWindow,
                                                 "Enter IP Address:",
                                                     "IP Address Required!!",
-                                                        JOptionPane.PLAIN_MESSAGE
+                                                        JOptionPane.PLAIN_MESSAGE, null, null,
+                                        "localhost"
                                                         );
 
         Socket soc = new Socket(ipAddress, 8888);
         in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-        out = new PrintWriter(new PrintWriter(soc.getOutputStream(), true));
+        out = new PrintWriter(soc.getOutputStream(), true);
 
         while (true) {
-
+            String str = in.readLine();
+            if (str.equals("NAME_REQUIRED")) {
+                String name = JOptionPane.showInputDialog(chatWindow,
+                                                "Enter a unique name:",
+                                                    "Name Required!",
+                                                        JOptionPane.PLAIN_MESSAGE);
+                out.println(name);
+            } else if (str.equals("NAME_ALREADY_EXIST")) {
+                String name = JOptionPane.showInputDialog(chatWindow,
+                                                    "Try another name:",
+                                                    "Name Already Exists!!",
+                                                        JOptionPane.WARNING_MESSAGE);
+                out.println(name);
+            } else if (str.equals("NAME_ACCEPTED")) {
+                textField.setEditable(true);
+            }
         }
 
     }
